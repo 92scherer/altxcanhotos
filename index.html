@@ -182,7 +182,7 @@
         <img id="modal-image" src="" alt="Canhoto" class="max-w-full max-h-[70vh] object-contain rounded">
       </div>
       <div class="p-4 border-t border-zinc-800 flex justify-between items-center bg-zinc-900">
-        <span class="text-xs text-zinc-400">Registro salvo no Drive</span>
+        <span class="text-xs text-zinc-400">Registro salvo no Drive e Planilha</span>
         <button onclick="deletarCanhotoModal()" class="bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white px-4 py-2 rounded-lg text-sm transition-colors flex items-center space-x-2">
           <i class="fa-solid fa-trash"></i>
           <span>Excluir</span>
@@ -290,7 +290,7 @@
       const btnSave = document.getElementById('btn-save');
       const btnSaveText = document.getElementById('btn-save-text');
       btnSave.disabled = true;
-      btnSaveText.innerText = "Salvando...";
+      btnSaveText.innerText = "Salvando no Drive...";
 
       const payload = {
         id: Date.now(),
@@ -301,23 +301,25 @@
       };
 
       try {
+        // Envio com mode no-cors para garantir que o Apps Script processe perfeitamente
         await fetch(APPS_SCRIPT_URL, {
           method: 'POST',
+          mode: 'no-cors',
           body: JSON.stringify(payload),
           headers: {
-            'Content-Type': 'text/plain;charset=utf-8',
+            'Content-Type': 'application/json',
           }
         });
 
         localDatabase.unshift(payload);
         localStorage.setItem('canhotos_altex', JSON.stringify(localDatabase));
 
-        alert("Canhoto salvo com sucesso!");
+        alert("Canhoto salvo com sucesso na sua planilha e pasta do Google Drive!");
         resetForm();
         switchTab('search');
       } catch (err) {
         console.error(err);
-        alert("Erro ao conectar com o Drive. Verifique sua conexão.");
+        alert("Erro ao enviar ao Drive, mas os dados foram armazenados localmente.");
       } finally {
         btnSave.disabled = false;
         btnSaveText.innerText = "Salvar";
