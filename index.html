@@ -151,4 +151,261 @@
             <input type="date" id="searchData" oninput="buscarCanhotos()" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-white outline-none">
           </div>
           <div>
-            <label class="block text-sm font-medium text-zinc-400 mb
+            <label class="block text-sm font-medium text-zinc-400 mb-1">Placa do Veículo</label>
+            <input type="text" id="searchPlaca" placeholder="Buscar placa..." oninput="buscarCanhotos()" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-white outline-none uppercase">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-zinc-400 mb-1">Número da NF</label>
+            <input type="text" id="searchNF" placeholder="Buscar número da nota..." oninput="buscarCanhotos()" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-white outline-none">
+          </div>
+        </div>
+      </div>
+
+      <div id="results-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </section>
+
+  </main>
+
+  <!-- ================= MODAL DE VISUALIZAÇÃO ================= -->
+  <div id="modal-view" class="fixed inset-0 z-50 hidden bg-black/90 flex items-center justify-center p-4">
+    <div class="bg-zinc-900 border border-zinc-800 rounded-xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
+      <div class="p-4 border-b border-zinc-800 flex justify-between items-center">
+        <div>
+          <h3 id="modal-title" class="text-lg font-bold text-white">Detalhes do Canhoto</h3>
+          <p id="modal-subtitle" class="text-xs text-zinc-400"></p>
+        </div>
+        <button onclick="closeModal()" class="text-zinc-400 hover:text-white p-2 text-xl">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="p-4 flex-1 overflow-auto flex items-center justify-center bg-black">
+        <img id="modal-image" src="" alt="Canhoto" class="max-w-full max-h-[70vh] object-contain rounded">
+      </div>
+      <div class="p-4 border-t border-zinc-800 flex justify-between items-center bg-zinc-900">
+        <span class="text-xs text-zinc-400">Registro salvo no Drive</span>
+        <button onclick="deletarCanhotoModal()" class="bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white px-4 py-2 rounded-lg text-sm transition-colors flex items-center space-x-2">
+          <i class="fa-solid fa-trash"></i>
+          <span>Excluir</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="bg-zinc-950 border-t border-zinc-900 py-6 text-center text-sm text-zinc-500">
+    <p>desenvolvido por <span class="text-white font-semibold">altex.io</span></p>
+  </footer>
+
+  <!-- ================= SCRIPT ================= -->
+  <script>
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw8a8lf0BYJgrjNDwB9thpt6nLh972LTWTbXDl45j4lr8RL68xp3Y7YHrCIdN1DBJgE2Q/exec";
+
+    let localDatabase = JSON.parse(localStorage.getItem('canhotos_altex') || '[]');
+    let currentBase64Image = "";
+    let selectedCanhotoId = null;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        document.getElementById('splash-screen').classList.add('hidden-splash');
+      }, 2000);
+      buscarCanhotos();
+    });
+
+    function switchTab(tab) {
+      const addSection = document.getElementById('section-add');
+      const searchSection = document.getElementById('section-search');
+      const btnAdd = document.getElementById('tab-btn-add');
+      const btnSearch = document.getElementById('tab-btn-search');
+
+      if (tab === 'add') {
+        addSection.classList.remove('hidden');
+        searchSection.classList.add('hidden');
+        btnAdd.className = "pb-3 px-4 text-base font-medium flex items-center space-x-2 border-b-2 border-brand-500 text-brand-500 transition-colors";
+        btnSearch.className = "pb-3 px-4 text-base font-medium flex items-center space-x-2 border-b-2 border-transparent text-zinc-400 hover:text-zinc-200 transition-colors";
+      } else {
+        addSection.classList.add('hidden');
+        searchSection.classList.remove('hidden');
+        btnSearch.className = "pb-3 px-4 text-base font-medium flex items-center space-x-2 border-b-2 border-brand-500 text-brand-500 transition-colors";
+        btnAdd.className = "pb-3 px-4 text-base font-medium flex items-center space-x-2 border-b-2 border-transparent text-zinc-400 hover:text-zinc-200 transition-colors";
+        buscarCanhotos();
+      }
+    }
+
+    function previewImage(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.src = e.target.result;
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          
+          let width = img.width;
+          let height = img.height;
+          const maxDim = 1200;
+
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          ctx.drawImage(img, 0, 0, width, height);
+
+          currentBase64Image = canvas.toDataURL('image/jpeg', 0.85);
+          document.getElementById('image-preview').src = currentBase64Image;
+          document.getElementById('image-preview-container').classList.remove('hidden');
+        }
+      }
+      reader.readAsDataURL(file);
+    }
+
+    function clearImage() {
+      document.getElementById('fileInput').value = "";
+      document.getElementById('image-preview-container').classList.add('hidden');
+      currentBase64Image = "";
+    }
+
+    function resetForm() {
+      document.getElementById('form-canhoto').reset();
+      clearImage();
+    }
+
+    async function salvarCanhoto(event) {
+      event.preventDefault();
+
+      if (!currentBase64Image) {
+        alert("Por favor, selecione uma imagem do canhoto.");
+        return;
+      }
+
+      const btnSave = document.getElementById('btn-save');
+      const btnSaveText = document.getElementById('btn-save-text');
+      btnSave.disabled = true;
+      btnSaveText.innerText = "Salvando no Drive...";
+
+      const payload = {
+        id: Date.now(),
+        dataInput: document.getElementById('dataInput').value,
+        placaInput: document.getElementById('placaInput').value.toUpperCase(),
+        nfInput: document.getElementById('nfInput').value,
+        fileData: currentBase64Image
+      };
+
+      try {
+        // Envio estruturado compatível com o Google Apps Script Web App
+        await fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify(payload),
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8',
+          }
+        });
+
+        localDatabase.unshift(payload);
+        localStorage.setItem('canhotos_altex', JSON.stringify(localDatabase));
+
+        alert("Canhoto salvo com sucesso na planilha e pasta do Google Drive!");
+        resetForm();
+        switchTab('search');
+      } catch (err) {
+        console.error(err);
+        alert("Erro ao conectar com o Drive. Verifique sua conexão.");
+      } finally {
+        btnSave.disabled = false;
+        btnSaveText.innerText = "Salvar no Drive & Planilha";
+      }
+    }
+
+    function buscarCanhotos() {
+      const filterData = document.getElementById('searchData').value;
+      const filterPlaca = document.getElementById('searchPlaca').value.toUpperCase();
+      const filterNF = document.getElementById('searchNF').value;
+
+      const container = document.getElementById('results-container');
+      container.innerHTML = "";
+
+      const resultados = localDatabase.filter(item => {
+        const matchData = !filterData || item.dataInput === filterData;
+        const matchPlaca = !filterPlaca || item.placaInput.includes(filterPlaca);
+        const matchNF = !filterNF || item.nfInput.includes(filterNF);
+        return matchData && matchPlaca && matchNF;
+      });
+
+      if (resultados.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full py-12 text-center text-zinc-500">
+            <i class="fa-solid fa-folder-open text-4xl mb-3"></i>
+            <p>Nenhum canhoto encontrado com os filtros selecionados.</p>
+          </div>
+        `;
+        return;
+      }
+
+      resultados.forEach(item => {
+        const card = document.createElement('div');
+        card.className = "bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden hover:border-zinc-700 transition-all flex flex-col justify-between";
+        card.innerHTML = `
+          <div class="relative h-48 bg-black cursor-pointer overflow-hidden group" onclick="openModal(${item.id})">
+            <img src="${item.fileData}" alt="NF ${item.nfInput}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-4">
+              <span class="text-xs bg-brand-600 text-white font-medium px-2 py-1 rounded">NF: ${item.nfInput}</span>
+            </div>
+          </div>
+          <div class="p-4 space-y-2">
+            <div class="flex justify-between items-center text-sm">
+              <span class="text-zinc-400"><i class="fa-solid fa-truck text-brand-500 mr-1.5"></i>Placa:</span>
+              <span class="font-bold text-white uppercase">${item.placaInput}</span>
+            </div>
+            <div class="flex justify-between items-center text-sm">
+              <span class="text-zinc-400"><i class="fa-solid fa-calendar text-brand-500 mr-1.5"></i>Data:</span>
+              <span class="text-zinc-200">${item.dataInput}</span>
+            </div>
+          </div>
+          <div class="p-4 pt-0 border-t border-zinc-800/50 mt-2 flex space-x-2">
+            <button onclick="openModal(${item.id})" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-medium py-2 rounded-lg transition-colors flex items-center justify-center space-x-1">
+              <i class="fa-solid fa-eye"></i>
+              <span>Visualizar</span>
+            </button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function openModal(id) {
+      const item = localDatabase.find(c => c.id === id);
+      if (!item) return;
+
+      selectedCanhotoId = id;
+      document.getElementById('modal-title').innerText = `Canhoto NF: ${item.nfInput}`;
+      document.getElementById('modal-subtitle').innerText = `Placa: ${item.placaInput} | Data: ${item.dataInput}`;
+      document.getElementById('modal-image').src = item.fileData;
+      document.getElementById('modal-view').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('modal-view').classList.add('hidden');
+      selectedCanhotoId = null;
+    }
+
+    function deletarCanhotoModal() {
+      if (!selectedCanhotoId) return;
+      if (confirm("Tem certeza de que deseja excluir este canhoto dos registros?")) {
+        localDatabase = localDatabase.filter(c => c.id !== selectedCanhotoId);
+        localStorage.setItem('canhotos_altex', JSON.stringify(localDatabase));
+        closeModal();
+        buscarCanhotos();
+      }
+    }
+  </script>
+</body>
+</html>
