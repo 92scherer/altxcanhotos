@@ -26,7 +26,6 @@
     }
   </script>
   <style>
-    /* Transição suave da Tela de Abertura (Splash Screen) */
     #splash-screen {
       transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
     }
@@ -38,7 +37,7 @@
 </head>
 <body class="bg-black text-white min-h-screen flex flex-col font-sans antialiased selection:bg-brand-500 selection:text-white">
 
-  <!-- ================= TELA DE ABERTURA (SPLASH SCREEN - 2 SEG) ================= -->
+  <!-- ================= TELA DE ABERTURA ================= -->
   <div id="splash-screen" class="fixed inset-0 z-50 bg-black flex flex-col items-center justify-center p-4">
     <div class="animate-pulse flex flex-col items-center">
       <img src="logo.png" alt="Logotipo" class="h-40 md:h-56 w-auto object-contain mb-6 drop-shadow-2xl" onerror="this.src='https://via.placeholder.com/300x120/111827/FFFFFF?text=Seu+Logo+Aqui'">
@@ -49,15 +48,12 @@
     </div>
   </div>
 
-  <!-- ================= CABEÇALHO (HEADER) ================= -->
+  <!-- ================= CABEÇALHO ================= -->
   <header class="bg-zinc-900 border-b border-zinc-800 sticky top-0 z-30 shadow-md">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-24 flex items-center justify-between">
-      <!-- Logo Centralizado/Esquerda -->
       <div class="flex-1 flex justify-center md:justify-start items-center">
         <img src="logo.png" alt="Logotipo" class="h-16 md:h-20 w-auto object-contain py-1" onerror="this.src='https://via.placeholder.com/200x60/111827/FFFFFF?text=Logo'">
       </div>
-      
-      <!-- Status da Conexão Drive -->
       <div class="hidden sm:flex items-center space-x-2 text-xs bg-zinc-800 border border-zinc-700 px-3 py-1.5 rounded-full text-zinc-300">
         <span class="h-2.5 w-2.5 rounded-full bg-brand-500 animate-pulse"></span>
         <span>Google Drive Conectado</span>
@@ -68,7 +64,7 @@
   <!-- ================= CONTEÚDO PRINCIPAL ================= -->
   <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col">
     
-    <!-- MENU DE NAVEGAÇÃO / ABAS -->
+    <!-- MENU DE ABAS -->
     <div class="flex border-b border-zinc-800 mb-8 space-x-4">
       <button id="tab-btn-add" onclick="switchTab('add')" class="pb-3 px-4 text-base font-medium flex items-center space-x-2 border-b-2 border-brand-500 text-brand-500 transition-colors">
         <i class="fa-solid fa-plus-circle"></i>
@@ -80,7 +76,7 @@
       </button>
     </div>
 
-    <!-- ================= ABA 1: ADICIONAR CANHOTO ================= -->
+    <!-- ================= ADICIONAR CANHOTO ================= -->
     <section id="section-add" class="space-y-6 max-w-2xl mx-auto w-full">
       <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-6 shadow-xl">
         <h2 class="text-xl font-bold mb-6 flex items-center space-x-2 text-white">
@@ -91,17 +87,17 @@
         <form id="form-canhoto" onsubmit="salvarCanhoto(event)" class="space-y-5">
           <div>
             <label class="block text-sm font-medium text-zinc-300 mb-1">Data de Emissão / Recebimento</label>
-            <input type="date" id="dataInput" required class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2.5 text-white focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none">
+            <input type="date" id="dataInput" required class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2.5 text-white focus:ring-2 focus:ring-brand-500 outline-none">
           </div>
 
           <div>
             <label class="block text-sm font-medium text-zinc-300 mb-1">Placa do Veículo / Motorista</label>
-            <input type="text" id="placaInput" placeholder="Ex: ABC1D23" required uppercase class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2.5 text-white focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none uppercase">
+            <input type="text" id="placaInput" placeholder="Ex: ABC1D23" required class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2.5 text-white focus:ring-2 focus:ring-brand-500 outline-none uppercase">
           </div>
 
           <div>
             <label class="block text-sm font-medium text-zinc-300 mb-1">Número da Nota Fiscal (NF)</label>
-            <input type="text" id="nfInput" placeholder="Ex: 004521" required class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2.5 text-white focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none">
+            <input type="text" id="nfInput" placeholder="Ex: 004521" required class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2.5 text-white focus:ring-2 focus:ring-brand-500 outline-none">
           </div>
 
           <div>
@@ -110,7 +106,7 @@
               <div class="space-y-2 text-center">
                 <i class="fa-solid fa-cloud-arrow-up text-4xl text-zinc-500"></i>
                 <div class="flex text-sm text-zinc-400 justify-center">
-                  <label for="fileInput" class="relative cursor-pointer bg-zinc-800 rounded-md font-medium text-brand-500 hover:text-brand-400 focus-within:outline-none px-3 py-1">
+                  <label for="fileInput" class="relative cursor-pointer bg-zinc-800 rounded-md font-medium text-brand-500 hover:text-brand-400 px-3 py-1">
                     <span>Selecionar arquivo</span>
                     <input id="fileInput" type="file" accept="image/*" required class="sr-only" onchange="previewImage(event)">
                   </label>
@@ -120,7 +116,6 @@
             </div>
           </div>
 
-          <!-- PRÉ-VISUALIZAÇÃO DA IMAGEM -->
           <div id="image-preview-container" class="hidden relative rounded-lg overflow-hidden border border-zinc-700 bg-zinc-950 max-h-64 flex items-center justify-center">
             <img id="image-preview" src="#" alt="Pré-visualização" class="max-h-64 object-contain">
             <button type="button" onclick="clearImage()" class="absolute top-2 right-2 bg-red-600/80 hover:bg-red-600 text-white p-2 rounded-full text-xs">
@@ -128,7 +123,6 @@
             </button>
           </div>
 
-          <!-- BOTÕES DE AÇÃO DO FORMULÁRIO -->
           <div class="flex space-x-4 pt-4">
             <button type="submit" id="btn-save" class="flex-1 bg-brand-600 hover:bg-brand-500 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center space-x-2 transition-colors">
               <i class="fa-solid fa-cloud-arrow-up"></i>
@@ -143,7 +137,7 @@
       </div>
     </section>
 
-    <!-- ================= ABA 2: BUSCAR CANHOTO ================= -->
+    <!-- ================= BUSCAR CANHOTO ================= -->
     <section id="section-search" class="hidden space-y-6">
       <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-6 shadow-xl">
         <h2 class="text-xl font-bold mb-6 flex items-center space-x-2 text-white">
@@ -154,283 +148,7 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label class="block text-sm font-medium text-zinc-400 mb-1">Filtrar por Data</label>
-            <input type="date" id="searchData" oninput="buscarCanhotos()" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-brand-500 outline-none">
+            <input type="date" id="searchData" oninput="buscarCanhotos()" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-white outline-none">
           </div>
-
           <div>
-            <label class="block text-sm font-medium text-zinc-400 mb-1">Placa do Veículo</label>
-            <input type="text" id="searchPlaca" placeholder="Buscar placa..." oninput="buscarCanhotos()" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-brand-500 outline-none uppercase">
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-zinc-400 mb-1">Número da NF</label>
-            <input type="text" id="searchNF" placeholder="Buscar número da nota..." oninput="buscarCanhotos()" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-brand-500 outline-none">
-          </div>
-        </div>
-      </div>
-
-      <!-- LISTA DE RESULTADOS DA BUSCA -->
-      <div id="results-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Inserido dinamicamente via JS -->
-      </div>
-    </section>
-
-  </main>
-
-  <!-- ================= MODAL DE VISUALIZAÇÃO DE CANHOTO ================= -->
-  <div id="modal-view" class="fixed inset-0 z-50 hidden bg-black/90 flex items-center justify-center p-4">
-    <div class="bg-zinc-900 border border-zinc-800 rounded-xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden shadow-2xl">
-      <div class="p-4 border-b border-zinc-800 flex justify-between items-center">
-        <div>
-          <h3 id="modal-title" class="text-lg font-bold text-white">Detalhes do Canhoto</h3>
-          <p id="modal-subtitle" class="text-xs text-zinc-400"></p>
-        </div>
-        <button onclick="closeModal()" class="text-zinc-400 hover:text-white p-2 text-xl">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-      <div class="p-4 flex-1 overflow-auto flex items-center justify-center bg-black">
-        <img id="modal-image" src="" alt="Canhoto" class="max-w-full max-h-[70vh] object-contain rounded">
-      </div>
-      <div class="p-4 border-t border-zinc-800 flex justify-between items-center bg-zinc-900">
-        <a id="modal-drive-link" href="#" target="_blank" class="text-xs text-brand-500 hover:underline flex items-center space-x-1">
-          <i class="fa-solid fa-arrow-up-right-from-square"></i>
-          <span>Abrir direto no Google Drive</span>
-        </a>
-        <button onclick="deletarCanhotoModal()" class="bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white px-4 py-2 rounded-lg text-sm transition-colors flex items-center space-x-2">
-          <i class="fa-solid fa-trash"></i>
-          <span>Excluir</span>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ================= RODAPÉ (FOOTER) ================= -->
-  <footer class="bg-zinc-950 border-t border-zinc-900 py-6 text-center text-sm text-zinc-500">
-    <p>desenvolvido por <span class="text-white font-semibold">altex.io</span></p>
-  </footer>
-
-  <!-- ================= SCRIPT JAVASCRIPT PRINCIPAL ================= -->
-  <script>
-    // URL do seu Google Apps Script Implantado
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw8a8lf0BYJgrjNDwB9thpt6nLh972LTWTbXDl45j4lr8RL68xp3Y7YHrCIdN1DBJgE2Q/exec";
-
-    let localDatabase = JSON.parse(localStorage.getItem('canhotos_altex') || '[]');
-    let currentBase64Image = "";
-    let selectedCanhotoId = null;
-
-    // 1. Controle da Tela de Abertura (Splash Screen)
-    window.addEventListener('DOMContentLoaded', () => {
-      setTimeout(() => {
-        const splash = document.getElementById('splash-screen');
-        splash.classList.add('hidden-splash');
-      }, 2000);
-      
-      buscarCanhotos();
-    });
-
-    // 2. Alternar Abas (Adicionar / Buscar)
-    function switchTab(tab) {
-      const addSection = document.getElementById('section-add');
-      const searchSection = document.getElementById('section-search');
-      const btnAdd = document.getElementById('tab-btn-add');
-      const btnSearch = document.getElementById('tab-btn-search');
-
-      if (tab === 'add') {
-        addSection.classList.remove('hidden');
-        searchSection.classList.add('hidden');
-        btnAdd.className = "pb-3 px-4 text-base font-medium flex items-center space-x-2 border-b-2 border-brand-500 text-brand-500 transition-colors";
-        btnSearch.className = "pb-3 px-4 text-base font-medium flex items-center space-x-2 border-b-2 border-transparent text-zinc-400 hover:text-zinc-200 transition-colors";
-      } else {
-        addSection.classList.add('hidden');
-        searchSection.classList.remove('hidden');
-        btnSearch.className = "pb-3 px-4 text-base font-medium flex items-center space-x-2 border-b-2 border-brand-500 text-brand-500 transition-colors";
-        btnAdd.className = "pb-3 px-4 text-base font-medium flex items-center space-x-2 border-b-2 border-transparent text-zinc-400 hover:text-zinc-200 transition-colors";
-        buscarCanhotos();
-      }
-    }
-
-    // 3. Converter e Redimensionar Imagem para Base64
-    function previewImage(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const img = new Image();
-        img.src = e.target.result;
-        img.onload = function() {
-          const canvas = document.createElement('canvas');
-          const ctx = canvas.getContext('2d');
-          
-          let width = img.width;
-          let height = img.height;
-          const maxDim = 1200;
-
-          if (width > maxDim || height > maxDim) {
-            if (width > height) {
-              height = Math.round((height * maxDim) / width);
-              width = maxDim;
-            } else {
-              width = Math.round((width * maxDim) / height);
-              height = maxDim;
-            }
-          }
-
-          canvas.width = width;
-          canvas.height = height;
-          ctx.drawImage(img, 0, 0, width, height);
-
-          currentBase64Image = canvas.toDataURL('image/jpeg', 0.85);
-
-          document.getElementById('image-preview').src = currentBase64Image;
-          document.getElementById('image-preview-container').classList.remove('hidden');
-        }
-      }
-      reader.readAsDataURL(file);
-    }
-
-    function clearImage() {
-      document.getElementById('fileInput').value = "";
-      document.getElementById('image-preview-container').classList.add('hidden');
-      currentBase64Image = "";
-    }
-
-    function resetForm() {
-      document.getElementById('form-canhoto').reset();
-      clearImage();
-    }
-
-    // 4. Salvar Canhoto (Envia ao Google Apps Script / Drive / Sheets + LocalStorage)
-    async function salvarCanhoto(event) {
-      event.preventDefault();
-
-      if (!currentBase64Image) {
-        alert("Por favor, selecione uma imagem do canhoto.");
-        return;
-      }
-
-      const btnSave = document.getElementById('btn-save');
-      const btnSaveText = document.getElementById('btn-save-text');
-      btnSave.disabled = true;
-      btnSaveText.innerText = "Enviando ao Drive...";
-
-      const payload = {
-        id: Date.now(),
-        dataInput: document.getElementById('dataInput').value,
-        placaInput: document.getElementById('placaInput').value.toUpperCase(),
-        nfInput: document.getElementById('nfInput').value,
-        fileData: currentBase64Image
-      };
-
-      try {
-        // Envio para o Google Apps Script
-        await fetch(APPS_SCRIPT_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-
-        // Salva backup local
-        localDatabase.unshift(payload);
-        localStorage.setItem('canhotos_altex', JSON.stringify(localDatabase));
-
-        alert("Canhoto salvo com sucesso e enviado ao Google Drive/Planilha!");
-        resetForm();
-        switchTab('search');
-      } catch (err) {
-        console.error(err);
-        alert("Ocorreu um erro ao enviar para o Drive, mas os dados foram armazenados localmente.");
-      } finally {
-        btnSave.disabled = false;
-        btnSaveText.innerText = "Salvar no Drive & Planilha";
-      }
-    }
-
-    // 5. Função de Busca e Filtragem
-    function buscarCanhotos() {
-      const filterData = document.getElementById('searchData').value;
-      const filterPlaca = document.getElementById('searchPlaca').value.toUpperCase();
-      const filterNF = document.getElementById('searchNF').value;
-
-      const container = document.getElementById('results-container');
-      container.innerHTML = "";
-
-      const resultados = localDatabase.filter(item => {
-        const matchData = !filterData || item.dataInput === filterData;
-        const matchPlaca = !filterPlaca || item.placaInput.includes(filterPlaca);
-        const matchNF = !filterNF || item.nfInput.includes(filterNF);
-        return matchData && matchPlaca && matchNF;
-      });
-
-      if (resultados.length === 0) {
-        container.innerHTML = `
-          <div class="col-span-full py-12 text-center text-zinc-500">
-            <i class="fa-solid fa-folder-open text-4xl mb-3"></i>
-            <p>Nenhum canhoto encontrado com os filtros selecionados.</p>
-          </div>
-        `;
-        return;
-      }
-
-      resultados.forEach(item => {
-        const card = document.createElement('div');
-        card.className = "bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden hover:border-zinc-700 transition-all flex flex-col justify-between";
-        card.innerHTML = `
-          <div class="relative h-48 bg-black cursor-pointer overflow-hidden group" onclick="openModal(${item.id})">
-            <img src="${item.fileData}" alt="NF ${item.nfInput}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-4">
-              <span class="text-xs bg-brand-600 text-white font-medium px-2 py-1 rounded">NF: ${item.nfInput}</span>
-            </div>
-          </div>
-          <div class="p-4 space-y-2">
-            <div class="flex justify-between items-center text-sm">
-              <span class="text-zinc-400"><i class="fa-solid fa-truck text-brand-500 mr-1.5"></i>Placa:</span>
-              <span class="font-bold text-white uppercase">${item.placaInput}</span>
-            </div>
-            <div class="flex justify-between items-center text-sm">
-              <span class="text-zinc-400"><i class="fa-solid fa-calendar text-brand-500 mr-1.5"></i>Data:</span>
-              <span class="text-zinc-200">${item.dataInput}</span>
-            </div>
-          </div>
-          <div class="p-4 pt-0 border-t border-zinc-800/50 mt-2 flex space-x-2">
-            <button onclick="openModal(${item.id})" class="flex-1 bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-medium py-2 rounded-lg transition-colors flex items-center justify-center space-x-1">
-              <i class="fa-solid fa-eye"></i>
-              <span>Visualizar</span>
-            </button>
-          </div>
-        `;
-        container.appendChild(card);
-      });
-    }
-
-    // 6. Modal de Detalhes
-    function openModal(id) {
-      const item = localDatabase.find(c => c.id === id);
-      if (!item) return;
-
-      selectedCanhotoId = id;
-      document.getElementById('modal-title').innerText = `Canhoto NF: ${item.nfInput}`;
-      document.getElementById('modal-subtitle').innerText = `Placa: ${item.placaInput} | Data: ${item.dataInput}`;
-      document.getElementById('modal-image').src = item.fileData;
-      document.getElementById('modal-view').classList.remove('hidden');
-    }
-
-    function closeModal() {
-      document.getElementById('modal-view').classList.add('hidden');
-      selectedCanhotoId = null;
-    }
-
-    function deletarCanhotoModal() {
-      if (!selectedCanhotoId) return;
-      if (confirm("Tem certeza de que deseja excluir este canhoto dos registros locais?")) {
-        localDatabase = localDatabase.filter(c => c.id !== selectedCanhotoId);
-        localStorage.setItem('canhotos_altex', JSON.stringify(localDatabase));
-        closeModal();
-        buscarCanhotos();
-      }
-    }
-  </script>
-</body>
-</html>
+            <label class="block text-sm font-medium text-zinc-400 mb
