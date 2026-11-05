@@ -126,7 +126,7 @@
           <div class="flex space-x-4 pt-4">
             <button type="submit" id="btn-save" class="flex-1 bg-brand-600 hover:bg-brand-500 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center space-x-2 transition-colors">
               <i class="fa-solid fa-cloud-arrow-up"></i>
-              <span id="btn-save-text">Salvar no Drive & Planilha</span>
+              <span id="btn-save-text">Salvar</span>
             </button>
             <button type="button" onclick="resetForm()" class="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-medium py-3 px-4 rounded-lg flex items-center justify-center space-x-2 transition-colors">
               <i class="fa-solid fa-eraser"></i>
@@ -290,7 +290,7 @@
       const btnSave = document.getElementById('btn-save');
       const btnSaveText = document.getElementById('btn-save-text');
       btnSave.disabled = true;
-      btnSaveText.innerText = "Salvando no Drive...";
+      btnSaveText.innerText = "Salvando...";
 
       const payload = {
         id: Date.now(),
@@ -301,7 +301,6 @@
       };
 
       try {
-        // Envio estruturado compatível com o Google Apps Script Web App
         await fetch(APPS_SCRIPT_URL, {
           method: 'POST',
           body: JSON.stringify(payload),
@@ -313,7 +312,7 @@
         localDatabase.unshift(payload);
         localStorage.setItem('canhotos_altex', JSON.stringify(localDatabase));
 
-        alert("Canhoto salvo com sucesso na planilha e pasta do Google Drive!");
+        alert("Canhoto salvo com sucesso!");
         resetForm();
         switchTab('search');
       } catch (err) {
@@ -321,7 +320,7 @@
         alert("Erro ao conectar com o Drive. Verifique sua conexão.");
       } finally {
         btnSave.disabled = false;
-        btnSaveText.innerText = "Salvar no Drive & Planilha";
+        btnSaveText.innerText = "Salvar";
       }
     }
 
